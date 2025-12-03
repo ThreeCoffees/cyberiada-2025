@@ -5,6 +5,7 @@ extends CharacterBody3D
 @export var camera: Camera3D
 @export var mouse_sensitivity: float = 5
 
+var input_dir: Vector2
 var move_dir: Vector3
 var look_dir: Vector2
 
@@ -14,11 +15,12 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		look_dir = event.relative * 0.001
-		rotate_camera()
+		_rotate_camera()
 
-func rotate_camera() -> void:
+func _rotate_camera() -> void:
 	rotate_y(-look_dir.x * mouse_sensitivity) 
 	camera.rotation.x = clamp(camera.rotation.x - look_dir.y * mouse_sensitivity, -1.5, 1.5)
+
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -31,7 +33,7 @@ func _physics_process(delta: float) -> void:
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
-	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	
 	move_dir = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if move_dir:

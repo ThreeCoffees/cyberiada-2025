@@ -1,22 +1,56 @@
-[gd_scene load_steps=4 format=3 uid="uid://bskblp03rc0ya"]
+[gd_scene load_steps=7 format=3 uid="uid://bskblp03rc0ya"]
 
 [ext_resource type="Script" uid="uid://bf52fs5tncjq0" path="res://scripts/player_controller.gd" id="1_jpd4l"]
+[ext_resource type="Script" uid="uid://ovew2af6sdb" path="res://scripts/components/ledge_climbing_component.gd" id="2_71bva"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_16w3l"]
+radius = 0.45
+height = 1.8
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_16w3l"]
+radius = 0.45
+height = 1.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_71bva"]
+size = Vector3(1, 0.6, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fl60d"]
+size = Vector3(1, 1.8000001, 0.8)
 
 [node name="PlayerController" type="CharacterBody3D" node_paths=PackedStringArray("camera")]
+collision_layer = 2
+collision_mask = 4
 script = ExtResource("1_jpd4l")
-camera = NodePath("Camera3D")
+camera = NodePath("PlayerCamera")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_16w3l")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_16w3l")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+[node name="PlayerCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="StairClimbingComponent" type="Node" parent="." node_paths=PackedStringArray("stair_detection_area", "stair_obstacle_detection_area")]
+script = ExtResource("2_71bva")
+stair_detection_area = NodePath("../StairDetectionArea")
+stair_obstacle_detection_area = NodePath("../StairObstacleDetectionArea")
+
+[node name="StairDetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StairDetectionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.4)
+shape = SubResource("BoxShape3D_71bva")
+
+[node name="StairObstacleDetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StairObstacleDetectionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.4)
+shape = SubResource("BoxShape3D_fl60d")
